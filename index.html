@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Sandbox™ - Experiment, Deploy, and Scale AI Solutions Securely</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0ea5e9',
+                        secondary: '#0284c7',
+                        accent: '#38bdf8',
+                        dark: '#0c1424',
+                        light: '#f0f9ff',
+                        success: '#10b981',
+                        warning: '#f59e0b',
+                        error: '#ef4444'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+            background: linear-gradient(135deg, #0c1424 0%, #1e293b 100%);
+            color: #e2e8f0;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #0c1424 0%, #1e293b 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .gradient-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 80%, rgba(14, 165, 233, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        .tech-pattern {
+            position: relative;
+            background-image: 
+                radial-gradient(circle at 25px 25px, rgba(14, 165, 233, 0.1) 1px, transparent 1px),
+                radial-gradient(circle at 75px 75px, rgba(59, 130, 246, 0.1) 1px, transparent 1px);
+            background-size: 100px 100px;
+            background-position: 0 0, 50px 50px;
+        }
+        
+        .card-hover {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(14, 165, 233, 0.25);
+            border-color: rgba(14, 165, 233, 0.4);
+        }
+        
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.2) 0%, rgba(59, 130, 246, 0.2) 100%);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+        }
+        
+        .text-contrast-primary {
+            color: #e0f2fe;
+        }
+        
+        .text-contrast-secondary {
+            color: #bae6fd;
+        }
+        
+        .text-contrast-dark {
+            color: #0c1424;
+        }
+        
+        .text-contrast-light {
+            color: #f0f9ff;
+        }
+        
+        .text-contrast-gray {
+            color: #cbd5e1;
+        }
+        
+        .text-contrast-muted {
+            color: #94a3b8;
+        }
+        
+        .bg-contrast-light {
+            background-color: #f0f9ff;
+        }
+        
+        .bg-contrast-dark {
+            background-color: #0c1424;
+        }
+        
+        .border-contrast-primary {
+            border-color: #0ea5e9;
+        }
+        
+        .glow {
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.5);
+        }
+        
+        .glow:hover {
+            box-shadow: 0 0 30px rgba(14, 165, 233, 0.7);
+        }
+        
+        .glass {
+            background: rgba(14, 165, 233, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+        }
+        
+        .glass:hover {
+            background: rgba(14, 165, 233, 0.15);
+            border-color: rgba(14, 165, 233, 0.4);
+        }
+        
+        .neon-text {
+            background: linear-gradient(45deg, #0ea5e9, #38bdf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 20px rgba(14, 165, 233, 0.5);
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(14, 165, 233, 0.6);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-glow {
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.5);
+        }
+        
+        .btn-glow:hover {
+            box-shadow: 0 0 30px rgba(14, 165, 233, 0.8);
+        }
+    </style>
+</head>
+<body class="bg-light text-gray-800">
+    <!-- Navigation -->
+    <nav class="fixed w-full glass z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold neon-text tracking-tight">AI Sandbox™</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#features" class="text-gray-300 hover:text-contrast-secondary transition font-medium">Features</a>
+                    <a href="#pricing" class="text-gray-300 hover:text-contrast-secondary transition font-medium">Pricing</a>
+                    <a href="#use-cases" class="text-gray-300 hover:text-contrast-secondary transition font-medium">Use Cases</a>
+                    <a href="#partners" class="text-gray-300 hover:text-contrast-secondary transition font-medium">Partners</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="#waitlist" class="px-6 py-2 btn-primary text-white rounded-lg font-semibold btn-glow transition">
+                        <i data-feather="rocket" class="inline w-4 h-4 mr-2"></i>Get Early Access
+                    </a>
+                    <button class="md:hidden text-gray-300 hover:text-contrast-secondary">
+                        <i data-feather="menu"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="gradient-bg pt-32 pb-20 tech-pattern relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-full">
+            <div class="particle" style="width: 4px; height: 4px; top: 10%; left: 10%; animation-delay: 0s;"></div>
+            <div class="particle" style="width: 6px; height: 6px; top: 20%; left: 80%; animation-delay: 1s;"></div>
+            <div class="particle" style="width: 3px; height: 3px; top: 70%; left: 20%; animation-delay: 2s;"></div>
+            <div class="particle" style="width: 5px; height: 5px; top: 80%; left: 70%; animation-delay: 3s;"></div>
+            <div class="particle" style="width: 4px; height: 4px; top: 30%; left: 50%; animation-delay: 4s;"></div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="text-center" data-aos="fade-up" data-aos-delay="100">
+                <div class="inline-flex items-center glass px-6 py-3 rounded-full mb-8">
+                    <span class="text-sm font-semibold text-contrast-secondary tracking-wider">✨ ENTERPRISE-GRADE AI DEVELOPMENT PLATFORM</span>
+                </div>
+                <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold mb-8 leading-tight text-contrast-light">
+                    Finally, an AI Playground That<br>
+                    <span class="neon-text">Enterprise Security Teams Actually Trust.</span>
+                </h1>
+                <p class="text-xl md:text-2xl max-w-4xl mx-auto mb-12 opacity-90 leading-relaxed text-contrast-light">
+                    Stop choosing between speed and security. Our CISO-approved sandbox lets your teams ship AI prototypes in minutes—not months—while automatically enforcing GDPR, HIPAA, and SOC 2 controls. From zero to production-ready with one click.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-6 mb-20">
+                    <a href="#waitlist" class="px-8 py-4 btn-primary text-white font-bold rounded-xl btn-glow transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-3 text-lg">
+                        <i data-feather="rocket" class="w-6 h-6"></i>
+                        Get Your 14-Day Secure Sandbox
+                    </a>
+                    <a href="#demo" class="px-8 py-4 glass text-contrast-light font-bold rounded-xl hover:bg-white/20 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-3 text-lg">
+                        <i data-feather="video" class="w-6 h-6"></i>
+                        Watch Demo
+                    </a>
+                </div>
+                <div class="glass rounded-2xl p-8 max-w-5xl mx-auto">
+                    <p class="text-contrast-secondary mb-6 font-semibold tracking-wider">Security-approved by leading innovators:</p>
+                    <div class="flex flex-wrap justify-center items-center gap-12 text-contrast-light opacity-90">
+                        <div class="h-10 grayscale contrast-200 opacity-90 text-xl font-semibold">🏢 Global Enterprises</div>
+                        <div class="h-10 grayscale contrast-200 opacity-90 text-xl font-semibold">🏥 Healthcare Leaders</div>
+                        <div class="h-10 grayscale contrast-200 opacity-90 text-xl font-semibold">🔐 Security Pioneers</div>
+                        <div class="h-10 grayscale contrast-200 opacity-90 text-xl font-semibold">🚀 Tech Innovators</div>
+                        <div class="h-10 grayscale contrast-200 opacity-90 text-xl font-semibold">📊 Data Leaders</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why AI Sandbox Section -->
+    <section class="py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20" data-aos="fade-up">
+                <h2 class="text-3xl md:text-5xl font-bold mb-6 text-contrast-light">🚀 Why 87 % of AI Projects Stall—And How We Fix It</h2>
+                <p class="text-xl text-contrast-muted max-w-3xl mx-auto leading-relaxed">
+                    Your data scientists want bleeding-edge models; your security team wants airtight governance. We give both teams exactly what they need—without the endless email chains.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="card-hover p-8 rounded-2xl" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon mb-6">
+                        <i data-feather="zap" class="text-primary w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-contrast-light">Ship AI Prototypes 10× Faster—No Infrastructure Tickets Required</h3>
+                    <p class="text-contrast-muted leading-relaxed">Spin up a fully isolated, GPU-powered environment in 90 seconds. Your data scientists get Jupyter notebooks; security gets audit logs from day one.</p>
+                </div>
+                
+                <div class="card-hover p-8 rounded-2xl" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon mb-6">
+                        <i data-feather="shield" class="text-primary w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-contrast-light">Built-in CISO Assist™—Because Security Shouldn’t Be an Afterthought</h3>
+                    <p class="text-contrast-muted leading-relaxed">Every sandbox ships with pre-configured RBAC, automatic GDPR/HIPAA mapping, and tamper-proof audit trails. Your compliance team will actually thank you.</p>
+                </div>
+                
+                <div class="card-hover p-8 rounded-2xl" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon mb-6">
+                        <i data-feather="cpu" class="text-primary w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-contrast-light">Plug-and-Play Models—No API Keys, No Vendor Lock-In</h3>
+                    <p class="text-contrast-muted leading-relaxed">One click to deploy Llama 3, GPT-4o, Claude, or 200+ Hugging Face models. We handle credentials, rate limits, and cost tracking so you don’t have to.</p>
+                </div>
+                
+                <div class="card-hover p-8 rounded-2xl" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon mb-6">
+                        <i data-feather="database" class="text-primary w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-contrast-light">Vector DBs, ETL, and Connectors—All Pre-Integrated</h3>
+                    <p class="text-contrast-muted leading-relaxed">Qdrant, Milvus, or pgvector—pick your flavor. Slack, Notion, S3 connectors ready out-of-the-box. Zero YAML wrestling required.</p>
+                </div>
+                
+                <div class="card-hover p-8 rounded-2xl" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon mb-6">
+                        <i data-feather="lock" class="text-primary w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-contrast-light">Air-Gapped Sandboxes—Your Data Never Leaves Your Perimeter</h3>
+                    <p class="text-contrast-muted leading-relaxed">Every sandbox lives in its own VPC with dedicated GPUs. When you hit delete, everything—data, logs, models—vanishes permanently. No ghost backups.</p>
+                </div>
+                
+                <div class="card-hover p-8 rounded-2xl" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon mb-6">
+                        <i data-feather="refresh-cw" class="text-primary w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-contrast-light">One-Click Production Deploy—No Rewrites, No Surprises</h3>
+                    <p class="text-contrast-muted leading-relaxed">Promote your sandbox to Vector Database Cloud™ with a single click. Same code, same data, now running on 99.99 % SLA infrastructure.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Who It's For Section -->
+    <section class="py-24" id="features">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20" data-aos="fade-up">
+                <h2 class="text-3xl md:text-5xl font-bold mb-6 text-contrast-light">🛠️ Built for the Teams Stuck Between Innovation and Compliance</h2>
+                <p class="text-xl text-contrast-muted max-w-3xl mx-auto leading-relaxed">
+                    Whether you're a startup racing to MVP or a bank validating LLMs for PCI-DSS, we give you guardrails that accelerate instead of suffocate.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="card-hover p-8 rounded-2xl" data-aos="fade-up" data-aos-delay="100">
+                    <h3 class="text-2xl font-semibold mb-4 text-primary">Enterprise Innovation Teams</h3>
+                    <p class="text-contrast-muted leading-relaxed">Stop waiting 6 months for security sign-off. Launch compliant PoCs in days and show tangible ROI before the next board meeting.</p>
+                </div>
+                
+                <div class="card-hover p-8 rounded-2xl" data-aos="fade-up" data-aos-delay="200">
+                    <h3 class="text-2xl font-semibold mb-4 text-primary">AI Researchers & PhDs</h3>
+                    <p class="text-contrast-muted leading-relaxed">Run large-scale experiments on sensitive datasets without red-tape. Reproduce results exactly with versioned environments and immutable audit trails.</p>
+                </div>
+                
+                <div class="card-hover p-8 rounded-2xl" data-aos="fade-up" data-aos-delay="300">
+                    <h3 class="text-2xl font-semibold mb-4 text-primary">Full-Stack Developers</h3>
+                    <p class="text-contrast-muted leading-relaxed">Ship RAG apps end-to-end without learning DevOps. Use your favorite LangChain or LlamaIndex code; we handle auth, vector DBs, and scaling.</p>
+                </div>
+                
+                <div class="card-hover p-8 rounded-2xl" data-aos="fade-up" data-aos-delay="100">
+                    <h3 class="text-2xl font-semibold mb-4 text-primary">Seed to Series-B Startups</h3>
+                    <p class="text-contrast-muted leading-relaxed">Prove product-market fit without burning runway on GPUs. Scale from 100 to 100 M queries seamlessly when you hit growth mode.</p>
+                </div>
+                
+                <div class="card-hover p-8 rounded-2xl" data-aos="fade-up" data-aos-delay="200">
+                    <h3 class="text-2xl font-semibold mb-4 text-primary">Compliance Teams</h3>
+                    <p class="text-contrast-muted leading-relaxed">Validate data privacy and risk before production with built-in audit trails and controls.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Secure by Design Section -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">🔐 Secure by Design</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Built with security and compliance at the core of every feature
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="text-center" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon mx-auto mb-4">
+                        <i data-feather="server" class="text-primary"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Isolated Compute</h3>
+                    <p class="text-gray-600">Per-Sandbox EC2 instances for complete isolation</p>
+                </div>
+                
+                <div class="text-center" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon mx-auto mb-4">
+                        <i data-feather="key" class="text-primary"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">End-to-End Encryption</h3>
+                    <p class="text-gray-600">Data protection at rest and in transit</p>
+                </div>
+                
+                <div class="text-center" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon mx-auto mb-4">
+                        <i data-feather="users" class="text-primary"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">RBAC & Workspace Management</h3>
+                    <p class="text-gray-600">Granular access controls for teams</p>
+                </div>
+                
+                <div class="text-center" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon mx-auto mb-4">
+                        <i data-feather="award" class="text-primary"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Compliance Standards</h3>
+                    <p class="text-gray-600">GDPR, HIPAA, SOC 2 alignment</p>
+                </div>
+                
+                <div class="text-center" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon mx-auto mb-4">
+                        <i data-feather="clipboard" class="text-primary"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Full Audit Trail</h3>
+                    <p class="text-gray-600">Via CISO Assist™ for complete visibility</p>
+                </div>
+                
+                <div class="text-center" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon mx-auto mb-4">
+                        <i data-feather="cloud" class="text-primary"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Powered by Vector Database Cloud™</h3>
+                    <p class="text-gray-600">SaaS simplicity with IaC-grade security</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Prototype to Production Section -->
+    <section class="py-20 gradient-bg text-white tech-pattern">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">🔁 From Prototype to Production in 1-Click</h2>
+                <p class="text-xl opacity-90 max-w-3xl mx-auto">
+                    Build inside the sandbox, launch outside. With direct upgrade paths to production environments.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white bg-opacity-10 p-6 rounded-xl backdrop-blur-sm" data-aos="fade-up" data-aos-delay="100">
+                    <h3 class="text-xl font-semibold mb-2">Vector Database Cloud™</h3>
+                    <p class="opacity-90">Scalable production-grade vector databases</p>
+                </div>
+                
+                <div class="bg-white bg-opacity-10 p-6 rounded-xl backdrop-blur-sm" data-aos="fade-up" data-aos-delay="200">
+                    <h3 class="text-xl font-semibold mb-2">Gov Sandbox™</h3>
+                    <p class="opacity-90">Compliant environments for government use</p>
+                </div>
+                
+                <div class="bg-white bg-opacity-10 p-6 rounded-xl backdrop-blur-sm" data-aos="fade-up" data-aos-delay="300">
+                    <h3 class="text-xl font-semibold mb-2">Enterprise Sandbox™</h3>
+                    <p class="opacity-90">Large-scale enterprise deployment options</p>
+                </div>
+                
+                <div class="bg-white bg-opacity-10 p-6 rounded-xl backdrop-blur-sm" data-aos="fade-up" data-aos-delay="100">
+                    <h3 class="text-xl font-semibold mb-2">Model Deployment SKUs</h3>
+                    <p class="opacity-90">Optimized infrastructure for model serving</p>
+                </div>
+                
+                <div class="bg-white bg-opacity-10 p-6 rounded-xl backdrop-blur-sm" data-aos="fade-up" data-aos-delay="200">
+                    <h3 class="text-xl font-semibold mb-2">Compliance Environments</h3>
+                    <p class="opacity-90">Pre-configured for industry regulations</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What's Inside Section -->
+    <section class="py-20 bg-white" id="use-cases">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">🧩 What's Inside the Sandbox?</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Everything you need to build, test, and deploy AI solutions
+                </p>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200" data-aos="fade-up">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Feature</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Included</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">1-Click Vector DB Deployment</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-green-600 font-semibold">✅ Qdrant, Milvus, ChromaDB, pgvector</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Embedding Generation</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-green-600 font-semibold">✅ Hugging Face, OpenAI, Jina, LiteLLM</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">RAG Chatbot Starter Kit</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-green-600 font-semibold">✅ GPT-4o compatible</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Custom Connectors</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-green-600 font-semibold">✅ CSV, PDF, Notion, Slack, APIs</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Observability</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-green-600 font-semibold">✅ API usage, CPU, latency logs</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">CLI & SDK Access</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-green-600 font-semibold">✅ Yes</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Full RBAC</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-green-600 font-semibold">✅ Workspaces & Teams</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Export to Production</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-green-600 font-semibold">✅ via Vector Database Cloud™</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="py-20 bg-gray-50" id="pricing">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">💸 Pricing That Scales With Your Ambition—Not Headcount</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Start free, pay as you prove value. Upgrade in minutes, never lose your work.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-md card-hover" data-aos="fade-up" data-aos-delay="100">
+                    <h3 class="text-2xl font-bold mb-2">Starter PoC</h3>
+                    <p class="text-3xl font-bold text-primary mb-4">£2,995<span class="text-lg font-normal text-gray-500">/mo</span></p>
+                    <p class="text-gray-600 mb-6">Perfect for internal demos and quick wins—no procurement headaches.</p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center">
+                            <i data-feather="check" class="text-green-500 mr-2"></i>
+                            <span>Basic vector DB support</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="check" class="text-green-500 mr-2"></i>
+                            <span>Up to 5 team members</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="check" class="text-green-500 mr-2"></i>
+                            <span>Standard support</span>
+                        </li>
+                    </ul>
+                    <a href="#waitlist" class="block w-full py-3 bg-primary text-white text-center rounded-md font-semibold hover:bg-secondary transition">Get Started</a>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-md card-hover border-2 border-primary" data-aos="fade-up" data-aos-delay="200">
+                    <div class="bg-primary text-white py-1 px-3 rounded-full text-sm font-semibold inline-block mb-4">Popular</div>
+                    <h3 class="text-2xl font-bold mb-2">Pro Sandbox</h3>
+                    <p class="text-3xl font-bold text-primary mb-4">£4,995<span class="text-lg font-normal text-gray-500">/mo</span></p>
+                    <p class="text-gray-600 mb-6">For teams shipping real features and need SLA-grade reliability.</p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center">
+                            <i data-feather="check" class="text-green-500 mr-2"></i>
+                            <span>All vector DB options</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="check" class="text-green-500 mr-2"></i>
+                            <span>Up to 20 team members</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="check" class="text-green-500 mr-2"></i>
+                            <span>Priority support</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="check" class="text-green-500 mr-2"></i>
+                            <span>Advanced analytics</span>
+                        </li>
+                    </ul>
+                    <a href="#waitlist" class="block w-full py-3 bg-primary text-white text-center rounded-md font-semibold hover:bg-secondary transition">Get Started</a>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-md card-hover" data-aos="fade-up" data-aos-delay="300">
+                    <h3 class="text-2xl font-bold mb-2">Enterprise Pilot</h3>
+                    <p class="text-3xl font-bold text-primary mb-4">£35,000+<span class="text-lg font-normal text-gray-500">/mo</span></p>
+                    <p class="text-gray-600 mb-6">When regulatory audits, custom infra, and white-glove support are non-negotiable.</p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center">
+                            <i data-feather="check" class="text-green-500 mr-2"></i>
+                            <span>Custom infrastructure</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="check" class="text-green-500 mr-2"></i>
+                            <span>Unlimited team members</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="check" class="text-green-500 mr-2"></i>
+                            <span>24/7 dedicated support</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="check" class="text-green-500 mr-2"></i>
+                            <span>Compliance certifications</span>
+                        </li>
+                    </ul>
+                    <a href="#waitlist" class="block w-full py-3 bg-primary text-white text-center rounded-md font-semibold hover:bg-secondary transition">Contact Sales</a>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-md card-hover" data-aos="fade-up" data-aos-delay="400">
+                    <h3 class="text-2xl font-bold mb-2">Hackathon/Partner</h3>
+                    <p class="text-3xl font-bold text-primary mb-4">Custom</p>
+                    <p class="text-gray-600 mb-6">SIs, universities, accelerators</p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center">
+                            <i data-feather="check" class="text-green-500 mr-2"></i>
+                            <span>Special pricing</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="check" class="text-green-500 mr-2"></i>
+                            <span>Extended trial periods</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="check" class="text-green-500 mr-2"></i>
+                            <span>Co-marketing opportunities</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="check" class="text-green-500 mr-2"></i>
+                            <span>Technical workshops</span>
+                        </li>
+                    </ul>
+                    <a href="#partners" class="block w-full py-3 bg-primary text-white text-center rounded-md font-semibold hover:bg-secondary transition">Learn More</a>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12 text-gray-600">
+                <p>NGOs and academic institutions automatically receive 40 % off. No questions asked—just verify your .edu or .org domain.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases Section -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">🧠 Use Cases</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Explore how organizations are leveraging AI Sandbox™
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-gray-50 p-6 rounded-xl card-hover" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon mb-4">
+                        <i data-feather="book-open" class="text-primary"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Fine-tune LLMs on private data</h3>
+                    <p class="text-gray-600">Customize language models with proprietary data in secure environments.</p>
+                </div>
+                
+                <div class="bg-gray-50 p-6 rounded-xl card-hover" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon mb-4">
+                        <i data-feather="scale" class="text-primary"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Evaluate AI regulatory compliance</h3>
+                    <p class="text-gray-600">Test against regulations before launch to ensure compliance.</p>
+                </div>
+                
+                <div class="bg-gray-50 p-6 rounded-xl card-hover" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon mb-4">
+                        <i data-feather="shopping-cart" class="text-primary"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Test recommendation engines</h3>
+                    <p class="text-gray-600">Validate algorithms on e-commerce data without affecting production.</p>
+                </div>
+                
+                <div class="bg-gray-50 p-6 rounded-xl card-hover" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon mb-4">
+                        <i data-feather="heart" class="text-primary"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Deploy healthcare GPTs securely</h3>
+                    <p class="text-gray-600">Build medical AI applications with PHI compliance built-in.</p>
+                </div>
+                
+                <div class="bg-gray-50 p-6 rounded-xl card-hover" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon mb-4">
+                        <i data-feather="search" class="text-primary"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Run semantic search</h3>
+                    <p class="text-gray-600">Implement advanced search over enterprise document corpus.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partner Section -->
+    <section class="py-20 bg-gray-50" id="partners">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">🤝 Partner With Us</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Are you a model provider, core banking/FinTech infra provider, back-office AI tool, or accelerator/hackathon organizer?
+                </p>
+            </div>
+            
+            <div class="bg-white p-8 rounded-xl shadow-sm max-w-3xl mx-auto" data-aos="fade-up">
+                <p class="text-lg text-gray-700 mb-6">
+                    Join our Certified Sandbox Partner™ marketplace and get your solution in front of 5,000+ enterprise teams actively shopping for AI tooling. We handle co-marketing, rev-share, and technical enablement.
+                </p>
+                <a href="#waitlist" class="inline-block px-6 py-3 bg-primary text-white rounded-md font-semibold hover:bg-secondary transition">Apply to Partner</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hackathon Section -->
+    <section class="py-20 bg-white" id="hackathon">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">📣 Hack for Equity, Prizes, and Pilot Contracts</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Our quarterly hackathon isn’t about toy demos—top teams win pilot contracts with Fortune 500 judges. Previous winners landed £500 k ARR deals.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div data-aos="fade-right">
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <i data-feather="award" class="text-primary mr-3 mt-1"></i>
+                            <span class="text-lg">£25K+ in prizes</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-feather="calendar" class="text-primary mr-3 mt-1"></i>
+                            <span class="text-lg">Hosted quarterly</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-feather="unlock" class="text-primary mr-3 mt-1"></i>
+                            <span class="text-lg">Free sandbox access</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-feather="target" class="text-primary mr-3 mt-1"></i>
+                            <span class="text-lg">Ideal for PoC, startup validation, or internal upskilling</span>
+                        </li>
+                    </ul>
+                    
+                    <div class="mt-8 flex flex-col sm:flex-row gap-4">
+                        <a href="#waitlist" class="px-6 py-3 bg-primary text-white rounded-md font-semibold text-center hover:bg-secondary transition">Apply Now</a>
+                        <a href="#partners" class="px-6 py-3 border border-primary text-primary rounded-md font-semibold text-center hover:bg-primary hover:text-white transition">Sponsor a Track</a>
+                    </div>
+                </div>
+                
+                <div data-aos="fade-left">
+                    <img src="http://static.photos/technology/640x360/42" alt="Hackathon" class="rounded-xl shadow-md">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Backed By Section -->
+    <section class="py-20 gradient-bg text-white tech-pattern">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">📣 Backed by Vector Database Cloud™</h2>
+                <p class="text-xl opacity-90 max-w-3xl mx-auto">
+                    The same engine that powers industry-leading solutions
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white bg-opacity-10 p-6 rounded-xl backdrop-blur-sm text-center" data-aos="fade-up" data-aos-delay="100">
+                    <h3 class="text-xl font-semibold mb-2">GovSandbox™</h3>
+                    <p class="opacity-90">Government-compliant AI environments</p>
+                </div>
+                
+                <div class="bg-white bg-opacity-10 p-6 rounded-xl backdrop-blur-sm text-center" data-aos="fade-up" data-aos-delay="200">
+                    <h3 class="text-xl font-semibold mb-2">EnterpriseSandbox™</h3>
+                    <p class="opacity-90">Large-scale enterprise deployment</p>
+                </div>
+                
+                <div class="bg-white bg-opacity-10 p-6 rounded-xl backdrop-blur-sm text-center" data-aos="fade-up" data-aos-delay="300">
+                    <h3 class="text-xl font-semibold mb-2">AI Compliance Copilot™</h3>
+                    <p class="opacity-90">Automated compliance validation</p>
+                </div>
+                
+                <div class="bg-white bg-opacity-10 p-6 rounded-xl backdrop-blur-sm text-center" data-aos="fade-up" data-aos-delay="100">
+                    <h3 class="text-xl font-semibold mb-2">RAG Ready™ Workflows</h3>
+                    <p class="opacity-90">Pre-built retrieval-augmented generation</p>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12 max-w-3xl mx-auto" data-aos="fade-up">
+                <p class="text-lg opacity-90">
+                    AI Sandbox™ inherits the robustness, modularity, and compliance-grade infrastructure of Vector Database Cloud™.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Waitlist Section -->
+    <section class="py-20 bg-white" id="waitlist">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">📬 Join the Waitlist</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Want early access or to host your own sandbox instance?
+                </p>
+            </div>
+            
+            <div class="bg-gray-50 p-8 rounded-xl max-w-3xl mx-auto" data-aos="fade-up">
+                <p class="text-lg text-gray-700 mb-8 text-center">
+                    Apply now for early onboarding, PoC pricing, or hackathon sponsorship.
+                </p>
+                
+                <form class="space-y-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                            <input type="text" id="name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                            <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="company" class="block text-sm font-medium text-gray-700 mb-1">Company/Organization</label>
+                        <input type="text" id="company" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                    </div>
+                    
+                    <div>
+                        <label for="interest" class="block text-sm font-medium text-gray-700 mb-1">I'm interested in</label>
+                        <select id="interest" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                            <option value="">Select an option</option>
+                            <option value="early-access">Early Access</option>
+                            <option value="demo">Schedule a Demo</option>
+                            <option value="partnership">Partnership</option>
+                            <option value="hackathon">Hackathon Participation</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message (Optional)</label>
+                        <textarea id="message" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="w-full py-3 bg-primary text-white rounded-md font-semibold hover:bg-secondary transition">Submit Application</button>
+                </form>
+                
+                <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8">
+                    <a href="#" class="px-6 py-3 bg-primary text-white rounded-md font-semibold text-center hover:bg-secondary transition">Get Early Access</a>
+                    <a href="#" class="px-6 py-3 border border-primary text-primary rounded-md font-semibold text-center hover:bg-primary hover:text-white transition">Schedule a Demo</a>
+                    <a href="#partners" class="px-6 py-3 border border-primary text-primary rounded-md font-semibold text-center hover:bg-primary hover:text-white transition">Partner With Us</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">AI Sandbox™</h3>
+                    <p class="text-gray-400">Experiment, Deploy, and Scale AI Solutions Securely</p>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Product</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#features" class="text-gray-400 hover:text-white transition">Features</a></li>
+                        <li><a href="#pricing" class="text-gray-400 hover:text-white transition">Pricing</a></li>
+                        <li><a href="#use-cases" class="text-gray-400 hover:text-white transition">Use Cases</a></li>
+                        <li><a href="#waitlist" class="text-gray-400 hover:text-white transition">Get Early Access</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Company</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#partners" class="text-gray-400 hover:text-white transition">Partners</a></li>
+                        <li><a href="#hackathon" class="text-gray-400 hover:text-white transition">Hackathon</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">About</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Careers</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Resources</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Documentation</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Blog</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Support</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Community</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400">© 2025 AI Sandbox™. All rights reserved. Powered by Vector Database Cloud™. </p>
+                
+                <div class="flex space-x-6 mt-4 md:mt-0">
+                    <a href="#" class="text-gray-400 hover:text-white transition">Privacy</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition">Terms</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition">Partner Policy</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition">Security Compliance</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+        
+        feather.replace();
+    </script>
+</body>
+</html>
